@@ -6,9 +6,9 @@ show_seperate = "no"; // [yes, no]
 
 /* [Basic] */
 // is the diameter of the cable in mm to be held by the cable holder
-cable_diameter = 5;
+cable_diameter = 7;
 // sets the distance between the holding tabs in mm
-table_thickness = 25;
+table_thickness = 25.3;
 // controls the distance between moving parts of the cable holder
 tolerance = 0.5;
 
