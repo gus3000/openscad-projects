@@ -20,12 +20,11 @@ hauteur = 200;
 largeur = 80;
 
 tailleFleur = largeur / 20;
-tailleEtoile = tailleFleur * 8/5;
+tailleEtoile = tailleFleur * 8 / 5;
 espacement = tailleEtoile * 2.5;
 
-marge_x = (largeur_totale - largeur)/2;
-marge_y = (hauteur_totale - hauteur)/2;
-
+marge_x = (largeur_totale - largeur) / 2;
+marge_y = (hauteur_totale - hauteur) / 2;
 
 module petale(rayon, x, y, decalage = 0.8, superposition = 0.5) {
   intersection() {
@@ -37,14 +36,14 @@ module petale(rayon, x, y, decalage = 0.8, superposition = 0.5) {
 
 module fleur(x, y) {
   for (i = [0:60:359]) {
-    rotate([ 0, 0, i ]) petale(tailleFleur/2, x, y);
+    rotate([ 0, 0, i ]) petale(tailleFleur / 2, x, y);
   }
 }
 
 module etoile(x, y) {
   for (i = [0:60:359]) {
-    rotate([ 0, 0, i ]) petale(tailleEtoile/2, x, y);
-    rotate([ 0, 0, i + 30 ]) petale(tailleEtoile/2 * 0.75, x, y);
+    rotate([ 0, 0, i ]) petale(tailleEtoile / 2, x, y);
+    rotate([ 0, 0, i + 30 ]) petale(tailleEtoile / 2 * 0.75, x, y);
   }
 }
 
@@ -52,17 +51,43 @@ module motif() {
   for (x = [0:1:5]) {
     for (y = [0:1:15]) {
       translate([ x * espacement, y * espacement, 0 ]) etoile(0, 0);
-      translate([ (x+0.5) * espacement, (y+0.5) * espacement, 0]) fleur(0, 0);
+      translate([ (x + 0.5) * espacement, (y + 0.5) * espacement, 0 ])
+          fleur(0, 0);
     }
   }
 }
 // color("grey") translate([ 0, 0, -5 ]) fleur(0, 0);
 
+module pave() {
+  color("white") translate([ -marge_x, -marge_y ])
+      cube([ largeur_totale, hauteur_totale, epaisseur ]);
+}
 
-difference() {
-  color("white") translate([-marge_x,-marge_y]) cube([largeur_totale, hauteur_totale, epaisseur]);
-  translate([0,0,-1]) linear_extrude(5) intersection() {
-    square([largeur,hauteur]);
-    motif();
+module grilleAMotif() {
+  difference() {
+    pave();
+    translate([ 0, 0, -1 ]) linear_extrude(5) intersection() {
+      square([ largeur, hauteur ]);
+      motif();
+    }
   }
 }
+
+module contour() {
+  epaisseur_contour = 5;
+  difference() {
+    pave();
+    translate([
+      -marge_x + epaisseur_contour / 2, -marge_y + epaisseur_contour / 2,
+      -epaisseur_contour / 2
+    ])
+        cube([
+          largeur_totale - epaisseur_contour,
+          hauteur_totale - epaisseur_contour, epaisseur +
+          epaisseur_contour
+        ]);
+  }
+}
+
+contour();
+// grilleAMotif();
